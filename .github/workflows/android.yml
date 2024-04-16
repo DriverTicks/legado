@@ -23,10 +23,15 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    - uses: gradle/gradle-build-action@v2
-      with:
-          gradle-version: current
-          arguments: assembleFullRelease
+    - name: Set up Gradle
+      uses: gradle/actions/setup-gradle@v3
+
+    - name: Build With Gradle
+      run: |
+          echo "开始进行${{ env.product }}构建"
+          chmod +x gradlew
+          ./gradlew assemble${{ env.product }}release --build-cache --parallel --daemon --warning-mode all
+          
     - uses: ilharp/sign-android-release@v1
       id: sign_app
       with:
